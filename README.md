@@ -3,54 +3,59 @@
 
 Level up your **logical creativity** with this **100 Days of Creative Coding Challenge** using **JavaScript (p5.js), WebGL & Mathematics**. Build **generative systems**, simulate **physics**, and create a **portfolio of digital art**!
 
-![p5.js](https://img.shields.io/badge/p5.js-ED225D?style=for-the-badge&logo=p5dotjs&logoColor=white) 
-![WebGL](https://img.shields.io/badge/WebGL-990000?style=for-the-badge&logo=webgl&logoColor=white) 
-![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black) 
-![GitHub Repo Size](https://img.shields.io/github/repo-size/Shubham-cyber-prog/100-Days-Of-Creative-Code?style=for-the-badge) 
-![GitHub Stars](https://img.shields.io/github/stars/Shubham-cyber-prog/100-Days-Of-Creative-Code?style=for-the-badge) 
+![p5.js](https://img.shields.io/badge/p5.js-ED225D?style=for-the-badge&logo=p5dotjs&logoColor=white)
+![WebGL](https://img.shields.io/badge/WebGL-990000?style=for-the-badge&logo=webgl&logoColor=white)
+![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)
+![GitHub Repo Size](https://img.shields.io/github/repo-size/Shubham-cyber-prog/100-Days-Of-Creative-Code?style=for-the-badge)
+![GitHub Stars](https://img.shields.io/github/stars/Shubham-cyber-prog/100-Days-Of-Creative-Code?style=for-the-badge)
 
-🔗 **Join our Creative Coding Discord:** [Click Here](https://discord.gg/placeholder) 
+🔗 **Join our Creative Coding Discord:** [Click Here](https://discord.gg/placeholder)
 
 ---
 
 ## 📌 About This Challenge
-This repository documents my **100 Days of Generative Art journey**, where I merge code with visual aesthetics to: 
-- Learn **computational geometry & vector math**. 
-- Build **physics simulations & particle systems**. 
-- Create **audio-reactive visuals**. 
+
+This repository documents my **100 Days of Generative Art journey**, where I merge code with visual aesthetics to:
+
+- Learn **computational geometry & vector math**.
+- Build **physics simulations & particle systems**.
+- Create **audio-reactive visuals**.
 - Explore **shaders (GLSL) & 3D rendering**.
 
 ---
 
 ## ✨ Key Features
-- **🎨 Daily Experiments**: 100 unique algorithmic sketches. 
-- **🌌 Physics Engines**: Custom implementations of gravity, flocking, and fluid dynamics. 
-- **🎛️ Interactive Controls**: Real-time parameter tweaking using GUI tools. 
-- **📸 Visual Gallery**: High-res outputs and GIFs for every project. 
+
+- **🎨 Daily Experiments**: 100 unique algorithmic sketches.
+- **🌌 Physics Engines**: Custom implementations of gravity, flocking, and fluid dynamics.
+- **🎛️ Interactive Controls**: Real-time parameter tweaking using GUI tools.
+- **📸 Visual Gallery**: High-res outputs and GIFs for every project.
 
 > 💡 *Note: Some sketches are computationally intensive and may utilize your GPU heavily.*
 
 ---
 
 ## 🔧 Tech Stack
-- **Core**: JavaScript (ES6+), Canvas API 
-- **Libraries**: p5.js, Three.js, Tone.js (Audio) 
-- **Shaders**: GLSL (OpenGL Shading Language) 
+
+- **Core**: JavaScript (ES6+), Canvas API
+- **Libraries**: p5.js, Three.js, Tone.js (Audio)
+- **Shaders**: GLSL (OpenGL Shading Language)
 
 ---
 
 ## 🌟 Get Involved
-- Fork this repo ⭐ 
-- Attempt the daily prompts using your own algorithms 
+
+- Fork this repo ⭐
+- Attempt the daily prompts using your own algorithms
 - Share your art on social media using **#100DaysOfCreativeCode** ---
 
 ## 🎯 Challenge Goals
 
-- ✅ Master Perlin Noise & Randomness 
-- ✅ Understand Vectors, Forces & Trigonometry 
-- ✅ Create emergent behavior (Flocking/Swarming) 
-- ✅ Visualize Audio Data (FFT) 
-- ✅ Build a stunning Generative Art Portfolio 
+- ✅ Master Perlin Noise & Randomness
+- ✅ Understand Vectors, Forces & Trigonometry
+- ✅ Create emergent behavior (Flocking/Swarming)
+- ✅ Visualize Audio Data (FFT)
+- ✅ Build a stunning Generative Art Portfolio
 
 ---
 
@@ -146,6 +151,7 @@ The digital exhibition is hosted on **GitHub Pages**:
 [🔗 View Live Art Gallery](https://shubham-cyber-prog.github.io/100-Days-Of-Creative-Code/)
 
 ---
+
 ## 🛠 Skills & Tools
 
 <p align="center">
@@ -160,10 +166,11 @@ The digital exhibition is hosted on **GitHub Pages**:
 
 ## 🎯 How to Contribute
 
-1.  **Fork the repository** 2.  **Create a new branch**: `git checkout -b DayX-feature` 
-3.  **Add your sketch files** (`index.html`, `sketch.js`, `style.css`) 
-4.  **Push branch**: `git push origin DayX-feature` 
-5.  **Create a Pull Request** ⚡ **Tips:** - Keep sketches **optimized** (avoid infinite loops that crash browsers).
+1. **Fork the repository** 2.  **Create a new branch**: `git checkout -b DayX-feature`
+2. **Add your sketch files** (`index.html`, `sketch.js`, `style.css`)
+3. **Push branch**: `git push origin DayX-feature`
+4. **Create a Pull Request** ⚡ **Tips:** - Keep sketches **optimized** (avoid infinite loops that crash browsers).
+
 - Use `requestAnimationFrame` or p5's `draw()` loop efficiently.
 - Add comments explaining the **math behind the art**.
 
@@ -183,17 +190,17 @@ The digital exhibition is hosted on **GitHub Pages**:
 
 ## 💡 Notes & Best Practices
 
-- Every project is **self-contained**. Open `index.html` to run the simulation. 
-- **Epilepsy Warning**: Some sketches may contain flashing lights or rapid patterns. 
-- **Discord** is where we discuss the algorithms: [Join Discord](https://discord.gg/placeholder) 
+- Every project is **self-contained**. Open `index.html` to run the simulation.
+- **Epilepsy Warning**: Some sketches may contain flashing lights or rapid patterns.
+- **Discord** is where we discuss the algorithms: [Join Discord](https://discord.gg/placeholder)
 
 ---
 
 ## 🎉 Motivation
 
-> "Code is the brush, the screen is the canvas, and logic is the paint." 
+> "Code is the brush, the screen is the canvas, and logic is the paint."
 
-Keep experimenting, stay curious, and complete your **100-day creative journey**! 
+Keep experimenting, stay curious, and complete your **100-day creative journey**!
 
 ---
 
@@ -201,5 +208,4 @@ Keep experimenting, stay curious, and complete your **100-day creative journey**
 
 [![Contributors](https://contributors-img.web.app/image?repo=Shubham-cyber-prog/100-Days-Of-Creative-Code&animated=true&columns=12)](https://github.com/Shubham-cyber-prog/100-Days-Of-Creative-Code/graphs/contributors) -->
 
-
-**Happy Creating! 🎨**
+**Happy Creating! 🎨** 
