@@ -1,20 +1,77 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <title>Interactive Life - P5.js</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.0/p5.js"></script>
     <style>
-        body { margin: 0; background: #050505; color: white; font-family: sans-serif; overflow: hidden; }
-        .controls { position: absolute; top: 10px; left: 10px; z-index: 10; pointer-events: none; }
+        body {
+            margin: 0;
+            background: #050505;
+            color: white;
+            font-family: sans-serif;
+            overflow: hidden;
+        }
+
+        .controls {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            z-index: 10;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #333;
+        }
+
+        .button-group {
+            margin: 10px 0;
+            display: flex;
+            gap: 5px;
+        }
+
+        button {
+            background: #222;
+            color: #fff;
+            border: 1px solid #444;
+            padding: 5px 10px;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+
+        button:hover {
+            background: #333;
+        }
+
+        .slider-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        h3 {
+            margin-top: 0;
+        }
     </style>
 </head>
+
 <body>
     <div class="controls">
         <h3>Interactive Game of Life</h3>
-        <p>DRAG to draw life | PRESS 'C' to clear | PRESS 'R' to randomise</p>
+        <p>DRAG to draw life</p>
+        <div class="button-group">
+            <button id="toggleBtn" onclick="togglePlay()">Pause</button>
+            <button onclick="clearGrid()">Clear</button>
+            <button onclick="randomizeGrid()">Randomize</button>
+        </div>
+        <div class="slider-group">
+            <label for="speedSlider">Speed: </label>
+            <input type="range" id="speedSlider" min="1" max="60" value="30">
+        </div>
     </div>
 
-<script src="sketch.js"></script>
+    <script src="sketch.js"></script>
 </body>
+
 </html>
