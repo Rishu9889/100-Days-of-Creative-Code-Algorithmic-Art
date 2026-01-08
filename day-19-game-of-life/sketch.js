@@ -3,7 +3,7 @@ let cols;
 let rows;
 let resolution = 10;
 let isRunning = true;
-let speedSlider;
+let speedSlider;   
 
 function setup() {
     createCanvas(windowWidth, windowHeight);
