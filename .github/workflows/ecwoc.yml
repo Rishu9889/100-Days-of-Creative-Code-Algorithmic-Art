@@ -1,0 +1,12 @@
+name: ECWoC Sentinel
+
+on:
+  pull_request:
+    types: [opened, reopened, synchronize]
+
+jobs:
+  ecwoc-check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: ECWoC Sentinel active
+        run: echo "ECWoC Sentinel is active"
