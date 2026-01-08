@@ -1,7 +1,7 @@
 let grid;
 let cols;
 let rows;
-let resolution = 8;
+let resolution = 10;
 let isRunning = true;
 let speedSlider;
 
