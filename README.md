@@ -6,8 +6,9 @@ Level up your **logical creativity** with this **100 Days of Creative Coding Cha
 ![p5.js](https://img.shields.io/badge/p5.js-ED225D?style=for-the-badge&logo=p5dotjs&logoColor=white)
 ![WebGL](https://img.shields.io/badge/WebGL-990000?style=for-the-badge&logo=webgl&logoColor=white)
 ![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)
-![GitHub Repo Size](https://img.shields.io/github/repo-size/Shubham-cyber-prog/100-Days-Of-Creative-Code?style=for-the-badge)
-![GitHub Stars](https://img.shields.io/github/stars/Shubham-cyber-prog/100-Days-Of-Creative-Code?style=for-the-badge)
+![Repo Size](https://img.shields.io/badge/dynamic/json?style=for-the-badge&label=repo%20size&query=size&suffix=%20KB&url=https://api.github.com/repos/Rishu9889/100-Days-of-Creative-Code-Algorithmic-Art)
+![GitHub Stars](https://img.shields.io/github/stars/Rishu9889/100-Days-of-Creative-Code-Algorithmic-Art?style=for-the-badge)
+
 
 🔗 **Join our Creative Coding Discord:** [Click Here](https://discord.gg/placeholder)
 
