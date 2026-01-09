@@ -1,0 +1,216 @@
+# GitHub Workflow for Pull Request and Issue Automated Message Bot
+# This workflow triggers on newly opened PRs and Issues, posting automated welcome messages
+# and helpful information to improve contributor experience and project communication.
+
+name: Auto Message Bot
+
+on:
+  issues:
+    types: [opened]
+  pull_request:
+    types: [opened]
+
+permissions:
+  issues: write
+  pull-requests: write
+
+jobs:
+  auto-message:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Check if First Time Contributor
+        id: first_time_check
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const eventName = context.eventName;
+            let username;
+            
+            if (eventName === 'issues') {
+              username = context.payload.issue.user.login;
+            } else if (eventName === 'pull_request') {
+              username = context.payload.pull_request.user.login;
+            }
+            
+            // Check if user has any previous PRs or issues
+            const { data: prsByUser } = await github.rest.search.issuesAndPullRequests({
+              q: `repo:${context.repo.owner}/${context.repo.repo} author:${username} is:pr`,
+              per_page: 2
+            });
+            
+            const { data: issuesByUser } = await github.rest.search.issuesAndPullRequests({
+              q: `repo:${context.repo.owner}/${context.repo.repo} author:${username} is:issue`,
+              per_page: 2
+            });
+            
+            const isFirstTime = (prsByUser.total_count + issuesByUser.total_count) <= 1;
+            core.setOutput('is_first_time', isFirstTime);
+            core.setOutput('username', username);
+            console.log(`User ${username} is first time contributor: ${isFirstTime}`);
+
+      - name: Read PR Welcome Template
+        if: github.event_name == 'pull_request'
+        id: pr_template
+        run: |
+          if [ -f ".github/auto-messages/pr-welcome.md" ]; then
+            CONTENT=$(cat .github/auto-messages/pr-welcome.md)
+          else
+            CONTENT="Thanks for opening this PR! 🎉 Please ensure you have followed our contribution guidelines."
+          fi
+          echo "content<<EOF" >> $GITHUB_OUTPUT
+          echo "$CONTENT" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+      - name: Read Issue Welcome Template
+        if: github.event_name == 'issues'
+        id: issue_template
+        run: |
+          if [ -f ".github/auto-messages/issue-welcome.md" ]; then
+            CONTENT=$(cat .github/auto-messages/issue-welcome.md)
+          else
+            CONTENT="Thanks for opening this issue! 📝 A maintainer will review it shortly."
+          fi
+          echo "content<<EOF" >> $GITHUB_OUTPUT
+          echo "$CONTENT" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+      - name: Read First Time Contributor Template
+        if: steps.first_time_check.outputs.is_first_time == 'true'
+        id: first_time_template
+        run: |
+          if [ -f ".github/auto-messages/first-time-contributor.md" ]; then
+            CONTENT=$(cat .github/auto-messages/first-time-contributor.md)
+          else
+            CONTENT="Welcome to the project! 🚀 Thank you for your first contribution!"
+          fi
+          echo "content<<EOF" >> $GITHUB_OUTPUT
+          echo "$CONTENT" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+      - name: Check for Missing Information in Issue
+        if: github.event_name == 'issues'
+        id: missing_info_check
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const issueBody = context.payload.issue.body || '';
+            const issueTitle = context.payload.issue.title || '';
+            
+            // Check for common missing information patterns
+            const checks = {
+              hasDescription: issueBody.length > 50,
+              hasStepsToReproduce: /steps to reproduce|reproduction|how to reproduce/i.test(issueBody),
+              hasExpectedBehavior: /expected|should|want/i.test(issueBody),
+              hasActualBehavior: /actual|instead|but|however/i.test(issueBody),
+              hasEnvironment: /browser|os|version|environment/i.test(issueBody),
+              hasTitle: issueTitle.length > 10
+            };
+            
+            // Issue is considered incomplete if body is too short or lacks key details
+            const isIncomplete = !checks.hasDescription || issueBody.trim() === '';
+            
+            core.setOutput('is_incomplete', isIncomplete);
+            console.log('Issue completeness checks:', JSON.stringify(checks));
+            console.log('Is incomplete:', isIncomplete);
+
+      - name: Read Missing Info Template
+        if: github.event_name == 'issues' && steps.missing_info_check.outputs.is_incomplete == 'true'
+        id: missing_info_template
+        run: |
+          if [ -f ".github/auto-messages/missing-info.md" ]; then
+            CONTENT=$(cat .github/auto-messages/missing-info.md)
+          else
+            CONTENT="Please provide more details to help us understand your issue better."
+          fi
+          echo "content<<EOF" >> $GITHUB_OUTPUT
+          echo "$CONTENT" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+      - name: Post Comment on Pull Request
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const username = '${{ steps.first_time_check.outputs.username }}';
+            const isFirstTime = '${{ steps.first_time_check.outputs.is_first_time }}' === 'true';
+            
+            let message = `${{ steps.pr_template.outputs.content }}`;
+            
+            // Add first-time contributor message if applicable
+            if (isFirstTime) {
+              const firstTimeMsg = `${{ steps.first_time_template.outputs.content }}`;
+              message = `${firstTimeMsg}\n\n---\n\n${message}`;
+            }
+            
+            // Replace placeholders
+            message = message.replace(/\{\{username\}\}/g, username);
+            message = message.replace(/\{\{pr_number\}\}/g, context.payload.pull_request.number);
+            message = message.replace(/\{\{repo_name\}\}/g, context.repo.repo);
+            
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.payload.pull_request.number,
+              body: message
+            });
+            
+            console.log('Posted PR welcome comment successfully!');
+
+      - name: Post Comment on Issue
+        if: github.event_name == 'issues'
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const username = '${{ steps.first_time_check.outputs.username }}';
+            const isFirstTime = '${{ steps.first_time_check.outputs.is_first_time }}' === 'true';
+            const isIncomplete = '${{ steps.missing_info_check.outputs.is_incomplete }}' === 'true';
+            
+            let message = `${{ steps.issue_template.outputs.content }}`;
+            
+            // Add first-time contributor message if applicable
+            if (isFirstTime) {
+              const firstTimeMsg = `${{ steps.first_time_template.outputs.content }}`;
+              message = `${firstTimeMsg}\n\n---\n\n${message}`;
+            }
+            
+            // Add missing info reminder if applicable
+            if (isIncomplete) {
+              const missingInfoMsg = `${{ steps.missing_info_template.outputs.content }}`;
+              message = `${message}\n\n---\n\n${missingInfoMsg}`;
+            }
+            
+            // Replace placeholders
+            message = message.replace(/\{\{username\}\}/g, username);
+            message = message.replace(/\{\{issue_number\}\}/g, context.payload.issue.number);
+            message = message.replace(/\{\{repo_name\}\}/g, context.repo.repo);
+            
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.payload.issue.number,
+              body: message
+            });
+            
+            console.log('Posted issue welcome comment successfully!');
+
+      - name: Log Summary
+        run: |
+          echo "## Auto Message Bot Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "- **Event Type:** ${{ github.event_name }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **User:** ${{ steps.first_time_check.outputs.username }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **First Time Contributor:** ${{ steps.first_time_check.outputs.is_first_time }}" >> $GITHUB_STEP_SUMMARY
+          if [ "${{ github.event_name }}" == "issues" ]; then
+            echo "- **Issue Number:** ${{ github.event.issue.number }}" >> $GITHUB_STEP_SUMMARY
+            echo "- **Missing Info Detected:** ${{ steps.missing_info_check.outputs.is_incomplete }}" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "- **PR Number:** ${{ github.event.pull_request.number }}" >> $GITHUB_STEP_SUMMARY
+          fi
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "✅ Auto message posted successfully!" >> $GITHUB_STEP_SUMMARY
