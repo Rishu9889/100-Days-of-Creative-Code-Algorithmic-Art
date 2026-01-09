@@ -2,13 +2,132 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Digital Pond Ecosystem</title>
-  <style>
-    body { margin: 0; overflow: hidden; background: #020b14; }
-  </style>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Digital Pond Ecosystem — Days 97-99</title>
+  <meta name="description" content="A complete pond ecosystem simulation featuring fish, plants, predators, food chains, reproduction, and population dynamics." />
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <script src="https://unpkg.com/three@0.158.0/build/three.min.js"></script>
+  <!-- ============================================= -->
+  <!-- Digital Pond Ecosystem - Days 97-99          -->
+  <!-- A complete pond ecosystem simulation         -->
+  <!-- featuring fish, plants, predators, and more  -->
+  <!-- ============================================= -->
+
+  <!-- Main Canvas Container -->
+  <div id="pond-container">
+    <canvas id="pond-canvas"></canvas>
+    
+    <!-- Statistics Panel -->
+    <div id="stats-panel">
+      <h3>🌿 Ecosystem Statistics</h3>
+      <div class="stat-row">
+        <span class="stat-label">🐟 Fish:</span>
+        <span id="fish-count" class="stat-value">0</span>
+      </div>
+      <div class="stat-row">
+        <span class="stat-label">🦈 Predators:</span>
+        <span id="predator-count" class="stat-value">0</span>
+      </div>
+      <div class="stat-row">
+        <span class="stat-label">🌱 Plants:</span>
+        <span id="plant-count" class="stat-value">0</span>
+      </div>
+      <div class="stat-row">
+        <span class="stat-label">🦠 Algae:</span>
+        <span id="algae-count" class="stat-value">0</span>
+      </div>
+      <div class="stat-row separator">
+        <span class="stat-label">⬆️ Births:</span>
+        <span id="birth-count" class="stat-value">0</span>
+      </div>
+      <div class="stat-row">
+        <span class="stat-label">⬇️ Deaths:</span>
+        <span id="death-count" class="stat-value">0</span>
+      </div>
+      <div class="stat-row">
+        <span class="stat-label">⏱️ Time:</span>
+        <span id="sim-time" class="stat-value">0s</span>
+      </div>
+    </div>
+
+    <!-- Control Panel -->
+    <div id="control-panel">
+      <h3>⚙️ Simulation Controls</h3>
+      
+      <div class="control-group">
+        <label for="speed-slider">Speed:</label>
+        <input type="range" id="speed-slider" min="0.1" max="3" step="0.1" value="1" />
+        <span id="speed-value">1.0x</span>
+      </div>
+
+      <div class="control-group">
+        <label for="fish-spawn">Initial Fish:</label>
+        <input type="range" id="fish-spawn" min="5" max="50" step="1" value="20" />
+        <span id="fish-spawn-value">20</span>
+      </div>
+
+      <div class="control-group">
+        <label for="predator-spawn">Initial Predators:</label>
+        <input type="range" id="predator-spawn" min="1" max="10" step="1" value="3" />
+        <span id="predator-spawn-value">3</span>
+      </div>
+
+      <div class="control-group">
+        <label for="plant-spawn">Initial Plants:</label>
+        <input type="range" id="plant-spawn" min="5" max="30" step="1" value="15" />
+        <span id="plant-spawn-value">15</span>
+      </div>
+
+      <div class="control-group">
+        <label for="mutation-rate">Mutation Rate:</label>
+        <input type="range" id="mutation-rate" min="0" max="0.5" step="0.01" value="0.1" />
+        <span id="mutation-value">10%</span>
+      </div>
+
+      <div class="button-group">
+        <button id="pause-btn" class="control-btn">⏸️ Pause</button>
+        <button id="reset-btn" class="control-btn">🔄 Reset</button>
+      </div>
+
+      <div class="button-group">
+        <button id="add-fish-btn" class="control-btn small">+ Fish</button>
+        <button id="add-predator-btn" class="control-btn small">+ Predator</button>
+        <button id="add-plant-btn" class="control-btn small">+ Plant</button>
+      </div>
+    </div>
+
+    <!-- Info Panel (Toggle) -->
+    <div id="info-toggle">ℹ️</div>
+    <div id="info-panel" class="hidden">
+      <h3>🌊 Digital Pond Ecosystem</h3>
+      <p><strong>Days 97-99 Capstone Project</strong></p>
+      <hr />
+      <h4>🔄 Food Chain:</h4>
+      <p>☀️ Sunlight → 🌿 Plants → 🐟 Fish → 🦈 Predators</p>
+      <hr />
+      <h4>🎮 Interactions:</h4>
+      <ul>
+        <li><strong>Click:</strong> Add ripple disturbance</li>
+        <li><strong>Right-click:</strong> Feed area (spawn algae)</li>
+        <li><strong>Scroll:</strong> Zoom in/out</li>
+        <li><strong>Drag:</strong> Pan view</li>
+      </ul>
+      <hr />
+      <h4>🧬 Behaviors:</h4>
+      <ul>
+        <li>Entities seek food based on hunger</li>
+        <li>Reproduction when energy is high</li>
+        <li>Death when energy depletes</li>
+        <li>Flocking & steering behaviors</li>
+        <li>Predator avoidance</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Load scripts -->
+  <script src="ecosystem.js"></script>
+  <script src="entities.js"></script>
   <script src="sketch.js"></script>
 </body>
 </html>
