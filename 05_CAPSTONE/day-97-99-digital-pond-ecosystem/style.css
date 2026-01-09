@@ -1,0 +1,426 @@
+/* ==================================================
+   Digital Pond Ecosystem — Styles
+   Days 97-99 Capstone Project
+   ================================================== */
+
+/* ============================================= */
+/* CSS Variables & Base Styles                   */
+/* ============================================= */
+
+:root {
+    /* Color Palette - Ocean/Pond Theme */
+    --pond-dark: #020b14;
+    --pond-mid: #0a1a2e;
+    --pond-light: #1e3a5f;
+    --water-blue: #1e88e5;
+    --water-glow: rgba(30, 136, 229, 0.3);
+
+    /* Accent Colors */
+    --fish-orange: #ffcc80;
+    --predator-red: #ff6b6b;
+    --plant-green: #66bb6a;
+    --algae-lime: #aed581;
+
+    /* UI Colors */
+    --panel-bg: rgba(10, 26, 46, 0.92);
+    --panel-border: rgba(30, 136, 229, 0.4);
+    --text-primary: #e8f4fd;
+    --text-secondary: #8cb4d4;
+    --accent: #4fc3f7;
+
+    /* Spacing */
+    --panel-padding: 16px;
+    --border-radius: 12px;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: var(--pond-dark);
+    color: var(--text-primary);
+    overflow: hidden;
+    height: 100vh;
+    width: 100vw;
+}
+
+/* ============================================= */
+/* Main Container                                */
+/* ============================================= */
+
+#pond-container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, var(--pond-dark) 0%, var(--pond-mid) 100%);
+}
+
+#pond-canvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+    cursor: crosshair;
+}
+
+/* ============================================= */
+/* Statistics Panel (Top Left)                   */
+/* ============================================= */
+
+#stats-panel {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    background: var(--panel-bg);
+    border: 1px solid var(--panel-border);
+    border-radius: var(--border-radius);
+    padding: var(--panel-padding);
+    min-width: 200px;
+    backdrop-filter: blur(12px);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4),
+        inset 0 1px 0 rgba(255, 255, 255, 0.05);
+    animation: slideIn 0.5s ease-out;
+}
+
+#stats-panel h3 {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--accent);
+    margin-bottom: 12px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.stat-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 6px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.stat-row:last-child {
+    border-bottom: none;
+}
+
+.stat-row.separator {
+    margin-top: 8px;
+    padding-top: 12px;
+    border-top: 1px solid var(--panel-border);
+}
+
+.stat-label {
+    font-size: 13px;
+    color: var(--text-secondary);
+}
+
+.stat-value {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-primary);
+    min-width: 40px;
+    text-align: right;
+}
+
+/* ============================================= */
+/* Control Panel (Top Right)                     */
+/* ============================================= */
+
+#control-panel {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: var(--panel-bg);
+    border: 1px solid var(--panel-border);
+    border-radius: var(--border-radius);
+    padding: var(--panel-padding);
+    min-width: 240px;
+    backdrop-filter: blur(12px);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4),
+        inset 0 1px 0 rgba(255, 255, 255, 0.05);
+    animation: slideIn 0.5s ease-out 0.1s both;
+}
+
+#control-panel h3 {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--accent);
+    margin-bottom: 16px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.control-group {
+    margin-bottom: 14px;
+}
+
+.control-group label {
+    display: block;
+    font-size: 12px;
+    color: var(--text-secondary);
+    margin-bottom: 6px;
+}
+
+.control-group input[type="range"] {
+    width: calc(100% - 50px);
+    height: 6px;
+    border-radius: 3px;
+    background: var(--pond-light);
+    outline: none;
+    cursor: pointer;
+    -webkit-appearance: none;
+}
+
+.control-group input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: var(--accent);
+    cursor: pointer;
+    box-shadow: 0 0 10px var(--water-glow);
+    transition: transform 0.2s ease;
+}
+
+.control-group input[type="range"]::-webkit-slider-thumb:hover {
+    transform: scale(1.2);
+}
+
+.control-group span {
+    display: inline-block;
+    width: 45px;
+    text-align: right;
+    font-size: 12px;
+    color: var(--accent);
+    font-weight: 600;
+    vertical-align: middle;
+    margin-left: 5px;
+}
+
+/* ============================================= */
+/* Buttons                                       */
+/* ============================================= */
+
+.button-group {
+    display: flex;
+    gap: 8px;
+    margin-top: 12px;
+}
+
+.control-btn {
+    flex: 1;
+    padding: 10px 14px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-primary);
+    background: linear-gradient(135deg, var(--pond-light) 0%, var(--pond-mid) 100%);
+    border: 1px solid var(--panel-border);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.control-btn:hover {
+    background: linear-gradient(135deg, var(--water-blue) 0%, var(--pond-light) 100%);
+    box-shadow: 0 4px 16px var(--water-glow);
+    transform: translateY(-1px);
+}
+
+.control-btn:active {
+    transform: translateY(0);
+}
+
+.control-btn.small {
+    padding: 8px 10px;
+    font-size: 11px;
+}
+
+.control-btn.paused {
+    background: linear-gradient(135deg, #4caf50 0%, #388e3c 100%);
+}
+
+/* ============================================= */
+/* Info Panel (Bottom Right)                     */
+/* ============================================= */
+
+#info-toggle {
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--panel-bg);
+    border: 1px solid var(--panel-border);
+    border-radius: 50%;
+    font-size: 20px;
+    cursor: pointer;
+    backdrop-filter: blur(12px);
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+}
+
+#info-toggle:hover {
+    background: var(--water-blue);
+    transform: scale(1.1);
+}
+
+#info-panel {
+    position: absolute;
+    bottom: 80px;
+    right: 20px;
+    width: 280px;
+    background: var(--panel-bg);
+    border: 1px solid var(--panel-border);
+    border-radius: var(--border-radius);
+    padding: var(--panel-padding);
+    backdrop-filter: blur(12px);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+    animation: slideUp 0.3s ease-out;
+}
+
+#info-panel.hidden {
+    display: none;
+}
+
+#info-panel h3 {
+    font-size: 16px;
+    color: var(--accent);
+    margin-bottom: 4px;
+}
+
+#info-panel h4 {
+    font-size: 13px;
+    color: var(--plant-green);
+    margin: 10px 0 6px;
+}
+
+#info-panel p {
+    font-size: 12px;
+    color: var(--text-secondary);
+    line-height: 1.5;
+}
+
+#info-panel hr {
+    border: none;
+    height: 1px;
+    background: var(--panel-border);
+    margin: 12px 0;
+}
+
+#info-panel ul {
+    list-style: none;
+    padding-left: 0;
+}
+
+#info-panel li {
+    font-size: 12px;
+    color: var(--text-secondary);
+    padding: 4px 0;
+    line-height: 1.4;
+}
+
+#info-panel li strong {
+    color: var(--text-primary);
+}
+
+/* ============================================= */
+/* Animations                                    */
+/* ============================================= */
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ============================================= */
+/* Responsive Design                             */
+/* ============================================= */
+
+@media (max-width: 768px) {
+
+    #stats-panel,
+    #control-panel {
+        min-width: auto;
+        max-width: calc(50% - 30px);
+    }
+
+    #control-panel {
+        font-size: 12px;
+    }
+
+    .control-btn {
+        padding: 8px 10px;
+        font-size: 11px;
+    }
+
+    #info-panel {
+        width: 250px;
+        max-width: calc(100% - 40px);
+    }
+}
+
+@media (max-width: 480px) {
+
+    #stats-panel,
+    #control-panel {
+        position: static;
+        margin: 10px;
+        max-width: calc(100% - 20px);
+    }
+
+    #pond-container {
+        display: flex;
+        flex-direction: column;
+    }
+
+    #pond-canvas {
+        flex: 1;
+        min-height: 300px;
+    }
+}
+
+/* ============================================= */
+/* Scrollbar Styling                             */
+/* ============================================= */
+
+::-webkit-scrollbar {
+    width: 6px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--pond-dark);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--pond-light);
+    border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--water-blue);
+}
