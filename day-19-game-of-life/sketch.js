@@ -1,18 +1,9 @@
 let grid;
 let cols;
 let rows;
-let resolution = 8;
+let resolution = 10;
 let isRunning = true;
-let speedSlider;
-let generationCount = 0;
-let currentTheme;
-
-const themes = {
-    classic: { bg: 0, cell: [0, 200, 255], trail: 40 },
-    matrix: { bg: 0, cell: [0, 255, 70], trail: 20 },
-    fire: { bg: 10, cell: [255, 100, 0], trail: 30 },
-    cottonCandy: { bg: 20, cell: [255, 182, 193], trail: 50 }
-};
+let speedSlider;   
 
 function setup() {
     createCanvas(windowWidth, windowHeight);
