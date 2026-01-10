@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Day 60 – Webcam ASCII</title>
+  <style>
+    body {
+      margin: 0;
+      background: black;
+      overflow: hidden;
+      font-family: monospace;
+    }
+    pre {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      margin: 0;
+      white-space: pre;
+      line-height: 1;
+      color: white;
+    }
+    canvas {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <pre id="ascii"></pre>
+  <canvas id="canvas"></canvas>
+  <script src="sketch.js"></script>
+</body>
+</html>
