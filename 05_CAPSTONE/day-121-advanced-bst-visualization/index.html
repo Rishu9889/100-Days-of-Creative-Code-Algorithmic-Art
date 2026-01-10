@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Day 121: Advanced BST Operations Visualization</title>
+    <meta name="description"
+        content="Interactive visualization of Advanced Binary Search Tree operations including AVL, Red-Black Tree, Trie, and Segment Tree">
+    <link
+        href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <!-- Animated Background -->
+    <div class="animated-bg">
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+    </div>
+
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">
+                <span class="logo-icon">🌳</span>
+                <span class="logo-text">Day 121</span>
+            </div>
+            <h1>Advanced BST Operations</h1>
+            <p class="subtitle">AVL • Red-Black • Trie • Segment Tree</p>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="main-container">
+        <!-- Navigation Tabs -->
+        <nav class="nav-tabs">
+            <button class="tab-btn active" data-tab="avl">
+                <span class="tab-icon">⚖️</span>
+                <span class="tab-label">AVL Tree</span>
+            </button>
+            <button class="tab-btn" data-tab="rbtree">
+                <span class="tab-icon">🔴</span>
+                <span class="tab-label">Red-Black Tree</span>
+            </button>
+            <button class="tab-btn" data-tab="trie">
+                <span class="tab-icon">📝</span>
+                <span class="tab-label">Trie</span>
+            </button>
+            <button class="tab-btn" data-tab="segment">
+                <span class="tab-icon">📊</span>
+                <span class="tab-label">Segment Tree</span>
+            </button>
+        </nav>
+
+        <!-- Control Panel -->
+        <div class="control-panel">
+            <div class="input-group">
+                <label for="valueInput">Value:</label>
+                <input type="text" id="valueInput" placeholder="Enter value..." class="input-field">
+            </div>
+            <div class="button-group">
+                <button id="insertBtn" class="action-btn insert-btn">
+                    <span>➕</span> Insert
+                </button>
+                <button id="deleteBtn" class="action-btn delete-btn">
+                    <span>➖</span> Delete
+                </button>
+                <button id="searchBtn" class="action-btn search-btn">
+                    <span>🔍</span> Search
+                </button>
+                <button id="clearBtn" class="action-btn clear-btn">
+                    <span>🗑️</span> Clear
+                </button>
+                <button id="randomBtn" class="action-btn random-btn">
+                    <span>🎲</span> Random
+                </button>
+            </div>
+            <div class="speed-control">
+                <label for="speedSlider">Animation Speed:</label>
+                <input type="range" id="speedSlider" min="100" max="2000" value="500" class="speed-slider">
+                <span id="speedValue">500ms</span>
+            </div>
+        </div>
+
+        <!-- Visualization Area -->
+        <div class="visualization-container">
+            <div class="canvas-wrapper">
+                <canvas id="treeCanvas"></canvas>
+            </div>
+
+            <!-- ASCII Art Display -->
+            <div class="ascii-display">
+                <div class="ascii-header">
+                    <span class="ascii-icon">📟</span>
+                    <span>ASCII Visualization</span>
+                </div>
+                <pre id="asciiOutput" class="ascii-content"></pre>
+            </div>
+        </div>
+
+        <!-- Info Panel -->
+        <div class="info-panel">
+            <!-- Operations Log -->
+            <div class="operations-log">
+                <div class="panel-header">
+                    <span class="panel-icon">📋</span>
+                    <span>Operations Log</span>
+                </div>
+                <div id="operationsLog" class="log-content"></div>
+            </div>
+
+            <!-- Complexity Analysis -->
+            <div class="complexity-panel">
+                <div class="panel-header">
+                    <span class="panel-icon">⚡</span>
+                    <span>Complexity Analysis</span>
+                </div>
+                <div id="complexityInfo" class="complexity-content">
+                    <div class="complexity-item">
+                        <span class="complexity-label">Insert:</span>
+                        <span class="complexity-value" id="insertComplexity">O(log n)</span>
+                    </div>
+                    <div class="complexity-item">
+                        <span class="complexity-label">Delete:</span>
+                        <span class="complexity-value" id="deleteComplexity">O(log n)</span>
+                    </div>
+                    <div class="complexity-item">
+                        <span class="complexity-label">Search:</span>
+                        <span class="complexity-value" id="searchComplexity">O(log n)</span>
+                    </div>
+                    <div class="complexity-item">
+                        <span class="complexity-label">Space:</span>
+                        <span class="complexity-value" id="spaceComplexity">O(n)</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Statistics -->
+            <div class="stats-panel">
+                <div class="panel-header">
+                    <span class="panel-icon">📈</span>
+                    <span>Statistics</span>
+                </div>
+                <div class="stats-content">
+                    <div class="stat-item">
+                        <span class="stat-label">Nodes:</span>
+                        <span class="stat-value" id="nodeCount">0</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Height:</span>
+                        <span class="stat-value" id="treeHeight">0</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Rotations:</span>
+                        <span class="stat-value" id="rotationCount">0</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Balance:</span>
+                        <span class="stat-value" id="balanceStatus">✅ Balanced</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Rotation Animation Panel -->
+        <div class="rotation-panel">
+            <div class="panel-header">
+                <span class="panel-icon">🔄</span>
+                <span>Rotation Steps</span>
+            </div>
+            <div id="rotationSteps" class="rotation-content">
+                <p class="placeholder-text">Perform an operation to see rotation steps...</p>
+            </div>
+        </div>
+
+        <!-- Test Results Panel -->
+        <div class="test-panel">
+            <div class="panel-header">
+                <span class="panel-icon">🧪</span>
+                <span>Test Suite</span>
+                <button id="runTestsBtn" class="run-tests-btn">Run Tests</button>
+            </div>
+            <div id="testResults" class="test-content">
+                <p class="placeholder-text">Click "Run Tests" to execute test suite...</p>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>100 Days of Creative Code & Algorithmic Art | Day 121</p>
+        <p class="footer-links">
+            <a href="https://github.com/motalib-code/100-Days-of-Creative-Code-Algorithmic-Art">GitHub</a>
+        </p>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="data-structures/avl-tree.js"></script>
+    <script src="data-structures/red-black-tree.js"></script>
+    <script src="data-structures/trie.js"></script>
+    <script src="data-structures/segment-tree.js"></script>
+    <script src="visualization/tree-visualizer.js"></script>
+    <script src="visualization/ascii-renderer.js"></script>
+    <script src="tests/test-suite.js"></script>
+    <script src="main.js"></script>
+</body>
+
+</html>
