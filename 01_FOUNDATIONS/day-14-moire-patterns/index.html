@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Day 14: Moiré Patterns</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.0/p5.min.js"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Day 14: Moiré Patterns</h1>
+            <p class="subtitle">Interference patterns created by overlapping repetitive structures</p>
+        </header>
+        
+        <div class="content">
+            <div class="canvas-container">
+                <div id="p5-canvas"></div>
+            </div>
+            
+            <div class="controls">
+                <div class="control-group">
+                    <h2>Pattern Controls</h2>
+                    
+                    <div class="pattern-selector">
+                        <button class="pattern-btn active" data-pattern="circles">Concentric Circles</button>
+                        <button class="pattern-btn" data-pattern="lines">Parallel Lines</button>
+                        <button class="pattern-btn" data-pattern="grid">Square Grid</button>
+                        <button class="pattern-btn" data-pattern="dots">Dot Matrix</button>
+                        <button class="pattern-btn" data-pattern="spiral">Spiral</button>
+                        <button class="pattern-btn" data-pattern="waves">Sine Waves</button>
+                    </div>
+                    
+                    <div class="slider-container">
+                        <label>Rotation Angle: <span class="value-display" id="angleValue">15</span>°</label>
+                        <input type="range" id="angleSlider" min="0" max="90" value="15" step="1">
+                    </div>
+                    
+                    <div class="slider-container">
+                        <label>Layer Spacing: <span class="value-display" id="spacingValue">50</span> px</label>
+                        <input type="range" id="spacingSlider" min="20" max="120" value="50" step="2">
+                    </div>
+                    
+                    <div class="slider-container">
+                        <label>Layer Offset: <span class="value-display" id="offsetValue">10</span> px</label>
+                        <input type="range" id="offsetSlider" min="0" max="100" value="10" step="1">
+                    </div>
+                </div>
+                
+                <div class="control-group">
+                    <h2>Color Scheme</h2>
+                    <div class="colors">
+                        <div class="color-option active" style="background: linear-gradient(135deg, #ff7e5f, #feb47b);" data-color="sunset"></div>
+                        <div class="color-option" style="background: linear-gradient(135deg, #86a8e7, #91eae4);" data-color="ocean"></div>
+                        <div class="color-option" style="background: linear-gradient(135deg, #667eea, #764ba2);" data-color="purple"></div>
+                        <div class="color-option" style="background: linear-gradient(135deg, #f093fb, #f5576c);" data-color="pink"></div>
+                        <div class="color-option" style="background: linear-gradient(135deg, #4facfe, #00f2fe);" data-color="blue"></div>
+                    </div>
+                    
+                    <div class="slider-container">
+                        <label>Animation Speed: <span class="value-display" id="speedValue">1.0</span></label>
+                        <input type="range" id="speedSlider" min="0" max="5" value="1" step="0.1">
+                    </div>
+                </div>
+                
+                <div class="control-group">
+                    <h2>Interaction</h2>
+                    <p>Move your mouse over the canvas to see interactive effects. Click and drag to manually adjust the pattern offset.</p>
+                    <button id="resetBtn">Reset to Default</button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="info-box">
+            <h2>About Moiré Patterns</h2>
+            <p>Moiré patterns are large-scale interference patterns that can be produced when an opaque ruled pattern with transparent gaps is overlaid on another similar pattern.</p>
+            
+            <p>Key characteristics of moiré patterns:</p>
+            <ul>
+                <li>They are <span class="highlight">emergent patterns</span> not present in the individual layers</li>
+                <li>The patterns are highly sensitive to <span class="highlight">rotation, spacing, and offset</span> between layers</li>
+                <li>They create the illusion of movement or depth when layers are animated</li>
+                <li>Moiré patterns have applications in <span class="highlight">physics, art, security printing, and optical measurements</span></li>
+            </ul>
+            
+            <p>In this visualization, you're seeing two identical pattern layers superimposed with a slight rotation and offset between them. Try different pattern types and adjust the controls to explore the variety of interference patterns that emerge.</p>
+        </div>
+    </div>
+
+    <script src="sketch.js"></script>
+</body>
+</html>
