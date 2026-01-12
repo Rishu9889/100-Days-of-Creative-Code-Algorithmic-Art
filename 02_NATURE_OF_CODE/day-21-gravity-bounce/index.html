@@ -2,20 +2,30 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Day 21 - Gravity & Bounce</title>
+  <title>Day 21 – Gravity & Bounce</title>
   <style>
     body {
       margin: 0;
-      background: #0e0e0e;
+      background: radial-gradient(circle at top, #0f172a, #020617);
       overflow: hidden;
+      font-family: system-ui, sans-serif;
     }
     canvas {
       display: block;
+    }
+    .hint {
+      position: fixed;
+      bottom: 16px;
+      right: 20px;
+      color: #94a3b8;
+      font-size: 12px;
+      opacity: 0.7;
     }
   </style>
 </head>
 <body>
   <canvas id="canvas"></canvas>
+  <div class="hint">Click to add balls • Hover over a ball to see physics info</div>
   <script src="sketch.js"></script>
 </body>
 </html>
