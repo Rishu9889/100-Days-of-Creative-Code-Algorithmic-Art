@@ -1,84 +1,109 @@
-// ================================
-// Canvas Setup
-// ================================
-
-// Get canvas and drawing context
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
 
-// Set canvas size
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
+function resize() {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+  generate();
+}
+window.addEventListener("resize", resize);
 
-// ================================
-// 🌐 Voronoi Diagram Parameters
-// ================================
+let points = [];
+const NUM_POINTS = 30;
 
-// Number of Voronoi sites (seed points)
-const NUM_POINTS = 40;
-
-// Each site has a position and a color
-const points = [];
-
-// Generate random sites
-for (let i = 0; i < NUM_POINTS; i++) {
-  points.push({
-    x: Math.random() * canvas.width,
-    y: Math.random() * canvas.height,
-    color: `hsl(${Math.random() * 360}, 70%, 60%)`,
-  });
+function generate() {
+  points = [];
+  for (let i = 0; i < NUM_POINTS; i++) {
+    points.push({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height,
+      color: hslToRgb(Math.random() * 360, 0.7, 0.6),
+    });
+  }
+  drawVoronoi();
 }
 
-// ================================
-// 🧠 Voronoi Logic
-// ================================
+function drawVoronoi() {
+  const w = canvas.width;
+  const h = canvas.height;
+  const img = ctx.createImageData(w, h);
+  const data = img.data;
 
-/*
-  Core idea of a Voronoi diagram:
+  for (let y = 0; y < h; y++) {
+    for (let x = 0; x < w; x++) {
+      let minDist = Infinity;
+      let closest = 0;
 
-  For every pixel in the plane:
-  - Measure its distance to every site
-  - Find the site with the minimum distance
-  - Assign the pixel to that site
-
-  Using squared distance avoids unnecessary square roots
-  and preserves correct distance comparisons.
-*/
-
-// Loop over every pixel on the canvas
-for (let y = 0; y < canvas.height; y++) {
-  for (let x = 0; x < canvas.width; x++) {
-    let minDist = Infinity;
-    let closestPoint = null;
-
-    // Compare distance to each site
-    for (let p of points) {
-      const dx = x - p.x;
-      const dy = y - p.y;
-
-      // Squared Euclidean distance
-      const dist = dx * dx + dy * dy;
-
-      if (dist < minDist) {
-        minDist = dist;
-        closestPoint = p;
+      for (let i = 0; i < points.length; i++) {
+        const dx = x - points[i].x;
+        const dy = y - points[i].y;
+        const d = dx * dx + dy * dy;
+        if (d < minDist) {
+          minDist = d;
+          closest = i;
+        }
       }
-    }
 
-    // Color pixel based on nearest site
-    ctx.fillStyle = closestPoint.color;
-    ctx.fillRect(x, y, 1, 1);
+      const idx = (y * w + x) * 4;
+      const c = points[closest].color;
+
+      data[idx] = c[0];
+      data[idx + 1] = c[1];
+      data[idx + 2] = c[2];
+      data[idx + 3] = 255;
+    }
+  }
+
+  ctx.putImageData(img, 0, 0);
+
+  // Draw seed points
+  for (let p of points) {
+    ctx.fillStyle = "#000";
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, 4, 0, Math.PI * 2);
+    ctx.fill();
   }
 }
 
-// ================================
-// 🔴 Draw Sites on Top
-// ================================
+function hslToRgb(h, s, l) {
+  h /= 360;
+  let r, g, b;
 
-// Draw the seed points to visualize cell centers
-for (let p of points) {
-  ctx.fillStyle = "black";
-  ctx.beginPath();
-  ctx.arc(p.x, p.y, 3, 0, Math.PI * 2);
-  ctx.fill();
+  if (s === 0) {
+    r = g = b = l;
+  } else {
+    const hue2rgb = (p, q, t) => {
+      if (t < 0) t += 1;
+      if (t > 1) t -= 1;
+      if (t < 1 / 6) return p + (q - p) * 6 * t;
+      if (t < 1 / 2) return q;
+      if (t < 2 / 3) return p + (q - p) * (2 / 3 - t) * 6;
+      return p;
+    };
+
+    const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+    const p = 2 * l - q;
+
+    r = hue2rgb(p, q, h + 1 / 3);
+    g = hue2rgb(p, q, h);
+    b = hue2rgb(p, q, h - 1 / 3);
+  }
+
+  return [
+    Math.round(r * 255),
+    Math.round(g * 255),
+    Math.round(b * 255),
+  ];
 }
+
+// Add new site on click
+canvas.addEventListener("click", (e) => {
+  points.push({
+    x: e.clientX,
+    y: e.clientY,
+    color: hslToRgb(Math.random() * 360, 0.7, 0.6),
+  });
+  drawVoronoi();
+});
+
+resize();

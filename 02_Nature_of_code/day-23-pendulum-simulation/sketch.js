@@ -1,143 +1,106 @@
+// ==================================================
+// Canvas Setup
+// ==================================================
+
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
 
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 
-window.addEventListener("resize", () => {
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
-  origin.x = canvas.width / 2;
-});
+// ==================================================
+// Pendulum State
+// ==================================================
 
-const gravity = 0.6;
+/*
+  A pendulum is described by angular quantities:
+
+  - angle: current angular position (θ)
+  - angularVelocity: rate of change of angle (ω)
+  - angularAcceleration: change in angular velocity (α)
+
+  Gravity provides the restoring force.
+*/
 
 const origin = {
   x: canvas.width / 2,
-  y: 120
+  y: 100
 };
 
-const pendulums = [
-  createPendulum(220, Math.PI / 4, "#e63946"),
-  createPendulum(300, Math.PI / 4, "#a8dadc"),
-  createPendulum(380, Math.PI / 4, "#f1faee")
-];
+const pendulum = {
+  length: 300,
+  angle: Math.PI / 4,          // initial angle
+  angularVelocity: 0,
+  angularAcceleration: 0,
+  damping: 0.995               // energy loss over time
+};
 
-function createPendulum(length, angle, color) {
-  return {
-    length,
-    angle,
-    angularVelocity: 0,
-    angularAcceleration: 0,
-    damping: 0.995,
-    color,
-    trail: []
-  };
+const gravity = 0.6;
+
+// ==================================================
+// Physics Update
+// ==================================================
+
+function update() {
+  /*
+    Angular acceleration for a simple pendulum:
+
+      α = -(g / L) * sin(θ)
+
+    The negative sign ensures the force
+    pulls the pendulum back toward equilibrium.
+  */
+  pendulum.angularAcceleration =
+    (-gravity / pendulum.length) * Math.sin(pendulum.angle);
+
+  // Integrate angular motion
+  pendulum.angularVelocity += pendulum.angularAcceleration;
+  pendulum.angularVelocity *= pendulum.damping; // simulate friction
+  pendulum.angle += pendulum.angularVelocity;
 }
 
+// ==================================================
+// Rendering
+// ==================================================
 
-function updatePendulum(p) {
-  p.angularAcceleration =
-    (-gravity / p.length) * Math.sin(p.angle);
+function draw() {
+  ctx.fillStyle = "#0e0e0e";
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-  p.angularVelocity += p.angularAcceleration;
-  p.angularVelocity *= p.damping;
-  p.angle += p.angularVelocity;
-}
+  // Calculate bob position using polar coordinates
+  const bobX =
+    origin.x + pendulum.length * Math.sin(pendulum.angle);
+  const bobY =
+    origin.y + pendulum.length * Math.cos(pendulum.angle);
 
-
-function calculateEnergy(p) {
-  const height =
-    p.length * (1 - Math.cos(p.angle));
-
-  const potential = gravity * height;
-  const kinetic = 0.5 * p.angularVelocity * p.angularVelocity;
-
-  return { potential, kinetic };
-}
-
-
-function drawPendulum(p, index) {
-  const x =
-    origin.x + p.length * Math.sin(p.angle);
-  const y =
-    origin.y + p.length * Math.cos(p.angle);
-
-  // Trail
-  p.trail.push({ x, y });
-  if (p.trail.length > 60) p.trail.shift();
-
-  ctx.strokeStyle = p.color;
-  ctx.globalAlpha = 0.3;
-  ctx.beginPath();
-  for (let i = 0; i < p.trail.length; i++) {
-    const t = p.trail[i];
-    ctx.lineTo(t.x, t.y);
-  }
-  ctx.stroke();
-  ctx.globalAlpha = 1;
-
-  // Arm
+  // Draw arm
   ctx.strokeStyle = "#f1faee";
   ctx.lineWidth = 2;
   ctx.beginPath();
   ctx.moveTo(origin.x, origin.y);
-  ctx.lineTo(x, y);
+  ctx.lineTo(bobX, bobY);
   ctx.stroke();
 
-  // Bob
-  ctx.fillStyle = p.color;
-  ctx.beginPath();
-  ctx.arc(x, y, 14, 0, Math.PI * 2);
-  ctx.fill();
-
-  // Pivot
-  ctx.fillStyle = "#f1faee";
-  ctx.beginPath();
-  ctx.arc(origin.x, origin.y, 5, 0, Math.PI * 2);
-  ctx.fill();
-
-  drawEnergyBars(p, index);
-}
-
-
-
-function drawEnergyBars(p, index) {
-  const { potential, kinetic } = calculateEnergy(p);
-
-  const maxBarHeight = 120;
-  const x = 40 + index * 70;
-  const baseY = canvas.height - 40;
-
-  const peHeight = Math.min(potential * 40, maxBarHeight);
-  const keHeight = Math.min(kinetic * 800, maxBarHeight);
-
-  // Potential Energy
-  ctx.fillStyle = "#457b9d";
-  ctx.fillRect(x, baseY - peHeight, 20, peHeight);
-
-  // Kinetic Energy
+  // Draw bob
   ctx.fillStyle = "#e63946";
-  ctx.fillRect(x + 24, baseY - keHeight, 20, keHeight);
+  ctx.beginPath();
+  ctx.arc(bobX, bobY, 18, 0, Math.PI * 2);
+  ctx.fill();
 
-  // Labels
+  // Draw pivot
   ctx.fillStyle = "#f1faee";
-  ctx.font = "12px sans-serif";
-  ctx.fillText("PE", x, baseY + 14);
-  ctx.fillText("KE", x + 24, baseY + 14);
+  ctx.beginPath();
+  ctx.arc(origin.x, origin.y, 6, 0, Math.PI * 2);
+  ctx.fill();
 }
 
-
+// ==================================================
+// Animation Loop
+// ==================================================
 
 function animate() {
-  ctx.fillStyle = "#0e0e0e";
-  ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-  for (let p of pendulums) {
-    updatePendulum(p);
-    drawPendulum(p, pendulums.indexOf(p));
-  }
-
+  update();
+  draw();
   requestAnimationFrame(animate);
 }
 
