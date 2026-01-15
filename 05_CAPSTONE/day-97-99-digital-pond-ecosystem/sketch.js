@@ -1,172 +1,195 @@
-// ==================================================
-// Digital Pond Ecosystem — Days 97–99
-// ==================================================
+const canvas = document.getElementById("canvas");
+const ctx = canvas.getContext("2d");
 
-const scene = new THREE.Scene();
-scene.fog = new THREE.Fog(0x020b14, 10, 80);
+function resize() {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+}
+window.addEventListener("resize", resize);
+resize();
 
-// Camera
-const camera = new THREE.PerspectiveCamera(
-  60, window.innerWidth / window.innerHeight, 0.1, 200
-);
-camera.position.set(0, 15, 22);
-camera.lookAt(0, 0, 0);
+// ---------------------------------------------
+// Utility
+// ---------------------------------------------
+function rand(min, max) {
+  return Math.random() * (max - min) + min;
+}
 
-// Renderer
-const renderer = new THREE.WebGLRenderer({ antialias: true });
-renderer.setSize(window.innerWidth, window.innerHeight);
-renderer.setPixelRatio(window.devicePixelRatio);
-document.body.appendChild(renderer.domElement);
-
-// Light
-scene.add(new THREE.AmbientLight(0x88aaff, 0.6));
-const sun = new THREE.DirectionalLight(0xffffff, 0.6);
-sun.position.set(10, 20, 10);
-scene.add(sun);
-
-// --------------------------------------------------
-// Water Surface (Day 97)
-// --------------------------------------------------
-
-const waterGeom = new THREE.PlaneGeometry(40, 40, 120, 120);
-waterGeom.rotateX(-Math.PI / 2);
-
-const waterMat = new THREE.MeshStandardMaterial({
-  color: 0x1e88e5,
-  roughness: 0.7,
-  metalness: 0.1,
-  transparent: true,
-  opacity: 0.85
-});
-
-const water = new THREE.Mesh(waterGeom, waterMat);
-scene.add(water);
-
-// Ripple state
-const rippleCenters = [];
-
-// Click → ripple
-window.addEventListener("click", e => {
-  const x = (Math.random() - 0.5) * 30;
-  const z = (Math.random() - 0.5) * 30;
-  rippleCenters.push({ x, z, t: 0 });
-});
-
-// --------------------------------------------------
-// Fish Agents (Day 98)
-// --------------------------------------------------
-
-const fishGroup = new THREE.Group();
-scene.add(fishGroup);
-
+// ---------------------------------------------
+// Entities
+// ---------------------------------------------
 class Fish {
-  constructor() {
-    const geom = new THREE.ConeGeometry(0.3, 1, 8);
-    const mat = new THREE.MeshStandardMaterial({
-      color: 0xffcc80
-    });
-    this.mesh = new THREE.Mesh(geom, mat);
-    this.mesh.rotation.x = Math.PI / 2;
+  constructor(x, y) {
+    this.pos = { x, y };
+    this.vel = { x: rand(-1, 1), y: rand(-0.5, 0.5) };
+    this.size = rand(6, 12);
+    this.speed = rand(0.6, 1.4);
+    this.color = `hsl(${rand(180, 210)}, 80%, ${rand(55, 65)}%)`;
+  }
 
-    this.pos = new THREE.Vector3(
-      (Math.random() - 0.5) * 20,
-      0.2,
-      (Math.random() - 0.5) * 20
-    );
-    this.vel = new THREE.Vector3(
-      Math.random() - 0.5,
-      0,
-      Math.random() - 0.5
-    ).normalize().multiplyScalar(0.05);
+  update(food) {
+    // Attraction to food
+    if (food.length) {
+      const f = food[0];
+      const dx = f.x - this.pos.x;
+      const dy = f.y - this.pos.y;
+      const d = Math.hypot(dx, dy);
+      if (d < 250) {
+        this.vel.x += dx / d * 0.03;
+        this.vel.y += dy / d * 0.03;
+      }
+    }
 
-    fishGroup.add(this.mesh);
+    // Swim
+    this.pos.x += this.vel.x * this.speed;
+    this.pos.y += this.vel.y * this.speed;
+
+    // Boundaries
+    if (this.pos.x < 0 || this.pos.x > canvas.width) this.vel.x *= -1;
+    if (this.pos.y < 0 || this.pos.y > canvas.height) this.vel.y *= -1;
+
+    // Slight damping
+    this.vel.x *= 0.99;
+    this.vel.y *= 0.99;
+  }
+
+  draw() {
+    ctx.save();
+    ctx.translate(this.pos.x, this.pos.y);
+    const angle = Math.atan2(this.vel.y, this.vel.x);
+    ctx.rotate(angle);
+
+    ctx.fillStyle = this.color;
+    ctx.beginPath();
+    ctx.ellipse(0, 0, this.size * 1.2, this.size * 0.7, 0, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Tail
+    ctx.beginPath();
+    ctx.moveTo(-this.size * 1.2, 0);
+    ctx.lineTo(-this.size * 2, -this.size * 0.6);
+    ctx.lineTo(-this.size * 2, this.size * 0.6);
+    ctx.closePath();
+    ctx.fill();
+
+    ctx.restore();
+  }
+}
+
+class Plant {
+  constructor(x) {
+    this.x = x;
+    this.baseY = canvas.height;
+    this.height = rand(80, 150);
+    this.phase = rand(0, Math.PI * 2);
+  }
+
+  draw(t) {
+    ctx.strokeStyle = "rgba(40,200,120,0.7)";
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+
+    for (let i = 0; i < 20; i++) {
+      const y = this.baseY - (i / 20) * this.height;
+      const sway = Math.sin(t * 0.002 + this.phase + i * 0.3) * 6;
+      const x = this.x + sway;
+      if (i === 0) ctx.moveTo(x, y);
+      else ctx.lineTo(x, y);
+    }
+
+    ctx.stroke();
+  }
+}
+
+class Ripple {
+  constructor(x, y) {
+    this.x = x;
+    this.y = y;
+    this.r = 0;
+    this.life = 1;
   }
 
   update() {
-    this.pos.add(this.vel);
+    this.r += 2.5;
+    this.life -= 0.01;
+  }
 
-    // Boundary wrap
-    if (this.pos.x > 20) this.pos.x = -20;
-    if (this.pos.x < -20) this.pos.x = 20;
-    if (this.pos.z > 20) this.pos.z = -20;
-    if (this.pos.z < -20) this.pos.z = 20;
-
-    // Gentle wandering
-    this.vel.applyAxisAngle(
-      new THREE.Vector3(0, 1, 0),
-      (Math.random() - 0.5) * 0.02
-    );
-
-    this.mesh.position.copy(this.pos);
-    this.mesh.lookAt(this.pos.clone().add(this.vel));
+  draw() {
+    ctx.strokeStyle = `rgba(180,240,255,${this.life})`;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
+    ctx.stroke();
   }
 }
 
-const fishes = [];
-for (let i = 0; i < 20; i++) fishes.push(new Fish());
+// ---------------------------------------------
+// World State
+// ---------------------------------------------
+const fish = [];
+const plants = [];
+const ripples = [];
+const food = [];
 
-// --------------------------------------------------
-// Lilypads (Day 99)
-// --------------------------------------------------
-
-const lilyGroup = new THREE.Group();
-scene.add(lilyGroup);
-
-for (let i = 0; i < 12; i++) {
-  const geom = new THREE.CircleGeometry(
-    1 + Math.random(), 16
-  );
-  const mat = new THREE.MeshStandardMaterial({
-    color: 0x66bb6a
-  });
-  const lily = new THREE.Mesh(geom, mat);
-  lily.rotation.x = -Math.PI / 2;
-  lily.position.set(
-    (Math.random() - 0.5) * 25,
-    0.05,
-    (Math.random() - 0.5) * 25
-  );
-  lilyGroup.add(lily);
+for (let i = 0; i < 10; i++) {
+  fish.push(new Fish(rand(0, canvas.width), rand(0, canvas.height)));
+}
+for (let i = 0; i < 6; i++) {
+  plants.push(new Plant(rand(0, canvas.width)));
 }
 
-// --------------------------------------------------
-// Animation Loop
-// --------------------------------------------------
+// ---------------------------------------------
+// Interaction
+// ---------------------------------------------
+canvas.addEventListener("click", e => {
+  const rect = canvas.getBoundingClientRect();
+  const x = e.clientX - rect.left;
+  const y = e.clientY - rect.top;
 
-let t = 0;
+  ripples.push(new Ripple(x, y));
+  food.length = 0;
+  food.push({ x, y });
+});
+
+document.getElementById("addFish").onclick = () => {
+  fish.push(new Fish(rand(0, canvas.width), rand(0, canvas.height)));
+};
+
+document.getElementById("addPlant").onclick = () => {
+  plants.push(new Plant(rand(0, canvas.width)));
+};
+
+// ---------------------------------------------
+// Render Loop
+// ---------------------------------------------
+let time = 0;
+
+function drawBackground() {
+  const g = ctx.createLinearGradient(0, 0, 0, canvas.height);
+  g.addColorStop(0, "#0a3a4a");
+  g.addColorStop(1, "#02161f");
+  ctx.fillStyle = g;
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+}
+
 function animate() {
-  requestAnimationFrame(animate);
-  t += 0.01;
+  time++;
+  drawBackground();
 
-  // Water ripples
-  const pos = waterGeom.attributes.position;
-  for (let i = 0; i < pos.count; i++) {
-    const x = pos.getX(i);
-    const z = pos.getZ(i);
-    let y = 0;
+  plants.forEach(p => p.draw(time));
 
-    rippleCenters.forEach(r => {
-      const d = Math.hypot(x - r.x, z - r.z);
-      y += Math.sin(d * 0.5 - r.t) * 0.2 * Math.exp(-d * 0.05);
-      r.t += 0.02;
-    });
+  fish.forEach(f => {
+    f.update(food);
+    f.draw();
+  });
 
-    pos.setY(i, y);
+  for (let i = ripples.length - 1; i >= 0; i--) {
+    ripples[i].update();
+    ripples[i].draw();
+    if (ripples[i].life <= 0) ripples.splice(i, 1);
   }
-  pos.needsUpdate = true;
-  waterGeom.computeVertexNormals();
 
-  // Fish update
-  fishes.forEach(f => f.update());
-
-  renderer.render(scene, camera);
+  requestAnimationFrame(animate);
 }
 
 animate();
-
-// Resize
-window.addEventListener("resize", () => {
-  camera.aspect = window.innerWidth / window.innerHeight;
-  camera.updateProjectionMatrix();
-  renderer.setSize(window.innerWidth, window.innerHeight);
-});

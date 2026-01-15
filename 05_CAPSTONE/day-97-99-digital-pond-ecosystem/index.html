@@ -3,12 +3,71 @@
 <head>
   <meta charset="UTF-8" />
   <title>Digital Pond Ecosystem</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <style>
-    body { margin: 0; overflow: hidden; background: #020b14; }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: radial-gradient(circle at top, #0a2a3a, #020b12);
+      overflow: hidden;
+      font-family: system-ui, sans-serif;
+      color: #e6f7ff;
+    }
+    canvas { display: block; }
+
+    .ui {
+      position: fixed;
+      top: 16px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(10, 30, 45, 0.65);
+      backdrop-filter: blur(10px);
+      padding: 10px 16px;
+      border-radius: 14px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .ui span {
+      font-size: 13px;
+      opacity: 0.9;
+    }
+
+    .ui button {
+      border: none;
+      padding: 6px 12px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, #33d1ff, #00ffa6);
+      color: #002a2a;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .hint {
+      position: fixed;
+      bottom: 16px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 13px;
+      opacity: 0.8;
+    }
   </style>
 </head>
 <body>
-  <script src="https://unpkg.com/three@0.158.0/build/three.min.js"></script>
+  <canvas id="canvas"></canvas>
+
+  <div class="ui">
+    <span>🐟 Fish:</span>
+    <button id="addFish">Add Fish</button>
+    <span>🌱 Plants:</span>
+    <button id="addPlant">Add Plant</button>
+  </div>
+
+  <div class="hint">
+    Click anywhere to create ripples & drop food
+  </div>
+
   <script src="sketch.js"></script>
 </body>
 </html>
