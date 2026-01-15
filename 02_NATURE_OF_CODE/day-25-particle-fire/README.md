@@ -1,24 +1,41 @@
 # Day 25 – Particle Fire
 
-This sketch simulates a fire-like particle system using simple
-physics-based particles.
-
-Particles are emitted from a source, rise upward due to initial velocity,
-and are affected by gravity and drag. Each particle has a finite
-lifespan and fades out over time, creating the visual impression of
-flames.
+A fire-like particle system built using the HTML Canvas API and basic
+physics principles.
 
 ## Concept
 
-Particle systems model complex phenomena by combining many simple agents
-with limited lifetimes. Fire, smoke, and explosions can all be simulated
-using this approach.
+This sketch simulates fire by emitting hundreds of short-lived particles
+that rise due to buoyancy, flicker due to turbulence, and fade as they
+cool.
 
 ## Techniques Used
 
 - Particle systems
-- Lifespan-based fading
-- Force accumulation
-- Gravity and drag
-- Alpha blending
+- Temperature-based color mapping
+- Buoyancy and gravity forces
+- Drag and turbulence
+- Additive (light) blending
+- Object pooling for performance
 - HTML Canvas API
+
+## Controls
+
+- Move the mouse horizontally to shift the fire source
+- Resize the window to adapt the canvas
+
+## Physics Model
+
+Each particle accumulates forces every frame:
+- Initial upward velocity
+- Buoyancy (hot air rise)
+- Gravity
+- Air resistance (drag)
+- Random turbulence
+
+## Possible Extensions
+
+- Smoke particles
+- Wind force
+- Color-temperature gradient
+- WebGL implementation
